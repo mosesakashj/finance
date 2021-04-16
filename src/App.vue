@@ -65,8 +65,8 @@ export default {
       ],
       settings: [
         { text: 'Agents', icon: 'mdi-format-list-checks', link: '/agents' },
-        // { text: 'User', icon: 'mdi-account-tie', link: '/employee' },
-        { text: 'Customer', icon: 'mdi-account', link: '/customer' }
+        { text: 'Customer', icon: 'mdi-account', link: '/customer' },
+        { text: 'Loans', icon: 'mdi-account-tie', link: '/loans' }
       ],
       isVisiblefor: ['admin', 'manager']
     }

@@ -13,22 +13,24 @@
             <v-card-title> <span class="headline">{{ formTitle }}</span> </v-card-title>
             <v-card-text>
               <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4" >
-                    <v-text-field v-model="editedItem.name" label="Name" ></v-text-field>
-                  </v-col><v-col cols="12" sm="6" md="4" >
-                    <v-text-field v-model="editedItem.email" label="Email" ></v-text-field>
-                  </v-col><v-col cols="12" sm="6" md="4" >
-                    <v-text-field v-model="editedItem.phone" label="Phone" ></v-text-field>
-                  </v-col><v-col cols="12" sm="6" md="4" >
-                    <v-text-field v-model="editedItem.role" label="Role" readonly></v-text-field>
-                  </v-col><v-col cols="12" sm="6" md="4" >
-                    <v-text-field v-model="editedItem.password" label="Password" ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.profile" label="Profile" ></v-text-field>
-                  </v-col>
-                </v-row>
+                <v-form ref="form">
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4" >
+                      <v-text-field v-model="editedItem.name" label="Name" :rules="defaultRules"></v-text-field>
+                    </v-col><v-col cols="12" sm="6" md="4" >
+                      <v-text-field v-model="editedItem.email" label="Email" :rules="emailRules"></v-text-field>
+                    </v-col><v-col cols="12" sm="6" md="4" >
+                      <v-text-field v-model="editedItem.phone" label="Phone" :rules="phoneRules"></v-text-field>
+                    </v-col><v-col cols="12" sm="6" md="4" >
+                      <v-text-field v-model="editedItem.role" label="Role" readonly></v-text-field>
+                    </v-col><v-col cols="12" sm="6" md="4" >
+                      <v-text-field v-model="editedItem.password" label="Password" :rules="defaultRules"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field v-model="editedItem.profile" label="Profile" ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-form>
               </v-container>
             </v-card-text>
             <v-card-actions>
@@ -50,6 +52,9 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
+    </template>
+    <template v-slot:[`item.profile`]="{ item }">
+      <v-img :src="item.profile" height="100px" contain></v-img>
     </template>
     <!-- <template v-slot:[`item.actions`]="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)" > mdi-pencil </v-icon>
@@ -112,7 +117,6 @@ export default {
       await fb.usersCollection.where('role', '==', 'agent').get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => this.desserts.push(doc.data()))
       })
-      // console.log(userProfile)
     },
     editItem (item) {
       this.editedIndex = this.desserts.indexOf(item)
@@ -148,15 +152,15 @@ export default {
     },
 
     saveUpdateHandler () {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem)
-      } else {
-        this.$store.dispatch('signup', this.editedItem)
-        this.getAgentsRecords()
-        // console.log(this.editedItem)
-        // this.desserts.push(this.editedItem)
+      if (this.$refs.form.validate()) {
+        if (this.editedIndex > -1) {
+          Object.assign(this.desserts[this.editedIndex], this.editedItem)
+        } else {
+          this.$store.dispatch('signup', this.editedItem)
+          this.getAgentsRecords()
+        }
+        this.close()
       }
-      this.close()
     }
   }
 }

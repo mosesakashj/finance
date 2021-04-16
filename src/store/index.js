@@ -24,15 +24,9 @@ export default new Vuex.Store({
       commit('setUserProfile', userProfile.data())
       if (router.currentRoute.path === '/login') router.push('/')
     },
-    async signup (form) {
+    async signup (state, form) {
       const { user } = await fb.auth.createUserWithEmailAndPassword(form.email, form.password)
-      await fb.usersCollection.doc(user.uid).set({
-        email: form.email,
-        role: form.role,
-        phone: form.phone,
-        profile: form.profile,
-        name: form.name
-      })
+      await fb.usersCollection.doc(user.uid).set(form)
     },
     async logout ({ commit }) {
       await fb.auth.signOut()

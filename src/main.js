@@ -4,7 +4,12 @@ import router from './router'
 import store from './store'
 import { auth } from './firebase'
 import vuetify from './plugins/vuetify'
+import helper from './mixins/index'
 
+const mixins = { helper }
+Object.keys(mixins).forEach(key => {
+  Vue.mixin(mixins[key])
+})
 Vue.config.productionTip = false
 
 let app

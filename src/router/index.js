@@ -6,6 +6,9 @@ import { auth } from '../firebase'
 Vue.use(VueRouter)
 const routes = [
   {
+    path: '*',
+    redirect: '/login'
+  }, {
     path: '/',
     name: 'Dashboard',
     component: Dashboard,
@@ -24,6 +27,21 @@ const routes = [
     name: 'customer',
     component: () => import('../views/Users/Customer.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/loans',
+    name: 'loans',
+    component: () => import('../views/Loans/Index.vue'),
+    meta: { requiresAuth: true },
+    children: [{
+      path: '/',
+      name: 'loans_list',
+      component: () => import('@/views/Loans/List.vue')
+    }, {
+      path: 'actions/:id?',
+      name: 'loans_actions',
+      component: () => import('@/views/Loans/Action.vue')
+    }]
   }
 ]
 

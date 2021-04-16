@@ -28,7 +28,6 @@ export default {
   methods: {
     async resetPassword () {
       this.errorMsg = ''
-
       try {
         await auth.sendPasswordResetEmail(this.email)
         this.showSuccess = true
