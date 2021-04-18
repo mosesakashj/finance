@@ -10,6 +10,10 @@
       </v-col>
     </v-row>
     <v-data-table dense :footer-props="paginationList" :headers="headers" :items="listofLoans" :items-per-page="25"  :search="search" class="elevation-1">
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-btn icon color="primary" @click="editLoan(item.id)"><v-icon>mdi-pencil</v-icon></v-btn>
+        <v-btn icon color="error"><v-icon>mdi-delete</v-icon></v-btn>
+      </template>
     </v-data-table>
   </div>
 </template>
@@ -58,8 +62,15 @@ export default {
     async getLoansList () {
       await fb.loansCollection.get().then((querySnapshot) => {
         console.log(querySnapshot)
-        querySnapshot.forEach((doc) => this.listofLoans.push(doc.data()))
+        querySnapshot.forEach((doc) => {
+          const data = doc.data()
+          data.id = doc.id
+          this.listofLoans.push(data)
+        })
       })
+    },
+    editLoan (id) {
+      this.$router.push(`/loans/actions/${id}`)
     }
   }
 }
