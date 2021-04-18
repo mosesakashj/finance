@@ -9,48 +9,57 @@
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details></v-text-field>
       </v-col>
     </v-row>
-    <v-data-table dense :footer-props="paginationList" :headers="headers" :items="[]" :items-per-page="25"  :search="search" class="elevation-1">
+    <v-data-table dense :footer-props="paginationList" :headers="headers" :items="listofLoans" :items-per-page="25"  :search="search" class="elevation-1">
     </v-data-table>
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import * as fb from '@/firebase'
+
 export default {
   data () {
     return {
       search: '',
-      listofReports: [],
+      listofLoans: [],
       listLoading: false,
       paginationList: { itemsPerPageOptions: [10, 25, 50, 100, -1] }
     }
   },
   computed: {
-    ...mapGetters(['getUsers', 'getUserGroups']),
     headers () {
       return [{
         text: 'Customer Name',
-        value: 'name'
+        value: 'customer'
       }, {
         text: 'Collection Agent',
-        value: 'description'
+        value: 'agent'
       }, {
         text: 'Start Date',
-        value: 'iscommon'
+        value: 'date'
       }, {
-        text: 'End Date',
-        value: 'availabletousers'
+        text: 'Collection Method',
+        value: 'type'
       }, {
-        text: 'Is Active',
-        value: 'availabletogroups'
+        text: 'Collection Count',
+        value: 'collectionCount'
+      }, {
+        text: 'Loan Amount',
+        value: 'loanAmount'
       }, {
         text: 'Actions',
         value: 'actions'
       }]
     }
   },
+  mounted () {
+    this.getLoansList()
+  },
   methods: {
-    getReportsList () {
-      //
+    async getLoansList () {
+      await fb.loansCollection.get().then((querySnapshot) => {
+        console.log(querySnapshot)
+        querySnapshot.forEach((doc) => this.listofLoans.push(doc.data()))
+      })
     }
   }
 }

@@ -17,6 +17,7 @@ export default new Vuex.Store({
   actions: {
     async login ({ dispatch }, form) {
       const { user } = await fb.auth.signInWithEmailAndPassword(form.email, form.password)
+      console.log(user.uid)
       dispatch('fetchUserProfile', user)
     },
     async fetchUserProfile ({ commit }, user) {
@@ -26,6 +27,7 @@ export default new Vuex.Store({
     },
     async signup (state, form) {
       const { user } = await fb.auth.createUserWithEmailAndPassword(form.email, form.password)
+      form.uid = user.uid
       await fb.usersCollection.doc(user.uid).set(form)
     },
     async logout ({ commit }) {
